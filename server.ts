@@ -9,12 +9,12 @@ async function startServer() {
   app.use(express.json());
 
   // Initialize DB
-  initDb();
+  await initDb();
 
   // API Routes
-  app.get('/api/assignments', (req, res) => {
+  app.get('/api/assignments', async (req, res) => {
     try {
-      const assignments = getAssignments();
+      const assignments = await getAssignments();
       res.json(assignments);
     } catch (error) {
       console.error(error);
@@ -22,9 +22,9 @@ async function startServer() {
     }
   });
 
-  app.get('/api/assignments/:id', (req, res) => {
+  app.get('/api/assignments/:id', async (req, res) => {
     try {
-      const assignment = getAssignment(Number(req.params.id));
+      const assignment = await getAssignment(Number(req.params.id));
       if (assignment) {
         res.json(assignment);
       } else {
@@ -36,14 +36,14 @@ async function startServer() {
     }
   });
 
-  app.post('/api/assignments/:id/take', (req, res) => {
+  app.post('/api/assignments/:id/take', async (req, res) => {
     try {
       const { studentName, studentSurname, studentNo } = req.body;
       if (!studentName || !studentSurname || !studentNo) {
         return res.status(400).json({ error: 'Missing student information' });
       }
       
-      const success = takeAssignment(Number(req.params.id), studentName, studentSurname, studentNo);
+      const success = await takeAssignment(Number(req.params.id), studentName, studentSurname, studentNo);
       if (success) {
         res.json({ success: true });
       } else {
@@ -55,13 +55,13 @@ async function startServer() {
     }
   });
 
-  app.post('/api/assignments', (req, res) => {
+  app.post('/api/assignments', async (req, res) => {
     try {
       const { title, researchTopic, applicationSteps, imageUrl } = req.body;
       if (!title) {
         return res.status(400).json({ error: 'Title is required' });
       }
-      const id = addAssignment(title, researchTopic || '', applicationSteps || '', imageUrl || '');
+      const id = await addAssignment(title, researchTopic || '', applicationSteps || '', imageUrl || '');
       res.json({ id, success: true });
     } catch (error) {
       console.error(error);
@@ -69,9 +69,9 @@ async function startServer() {
     }
   });
 
-  app.delete('/api/assignments/:id', (req, res) => {
+  app.delete('/api/assignments/:id', async (req, res) => {
     try {
-      const success = deleteAssignment(Number(req.params.id));
+      const success = await deleteAssignment(Number(req.params.id));
       res.json({ success });
     } catch (error) {
       console.error(error);
@@ -79,9 +79,9 @@ async function startServer() {
     }
   });
 
-  app.post('/api/assignments/:id/reset', (req, res) => {
+  app.post('/api/assignments/:id/reset', async (req, res) => {
     try {
-      const success = resetAssignment(Number(req.params.id));
+      const success = await resetAssignment(Number(req.params.id));
       res.json({ success });
     } catch (error) {
       console.error(error);

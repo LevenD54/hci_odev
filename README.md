@@ -21,12 +21,33 @@ Bu proje, öğrencilerin araştırma ödevlerini seçmeleri ve yönetmeleri içi
 2. Uygulamayı başlatın: `npm run dev`
 3. Tarayıcıda `http://localhost:3000` adresine gidin.
 
-## Veritabanı
+## Veritabanı (Supabase)
 
-Uygulama `better-sqlite3` kullanarak yerel bir SQLite veritabanı (`assignments.db`) kullanır. İlk çalıştırıldığında `assignments.csv` dosyasındaki verilerle otomatik olarak doldurulur.
+Bu uygulama veritabanı olarak **Supabase** kullanmaktadır.
+
+### Kurulum Adımları
+
+1. **Supabase Projesi Oluşturun:**
+   - [Supabase](https://supabase.com/) üzerinde yeni bir proje oluşturun.
+   - Proje ID'nizi not edin (örneğin: `ljbgrimmovfbhfzhzoif`).
+
+2. **Tabloları Oluşturun:**
+   - Supabase Dashboard'da **SQL Editor** sekmesine gidin.
+   - `supabase_schema.sql` dosyasının içeriğini kopyalayıp yapıştırın ve çalıştırın (Run).
+   - Bu işlem `assignments` tablosunu oluşturacak ve gerekli izinleri (RLS) ayarlayacaktır.
+
+3. **Çevre Değişkenlerini Ayarlayın:**
+   - `.env` dosyasını oluşturun (veya `.env.example` dosyasını kopyalayın).
+   - `SUPABASE_URL` ve `SUPABASE_KEY` değerlerini girin.
+     - `SUPABASE_URL`: `https://<PROJECT_ID>.supabase.co`
+     - `SUPABASE_KEY`: Supabase Dashboard > Project Settings > API bölümünden `anon` veya `service_role` anahtarını alabilirsiniz. (Yönetim işlemleri için `service_role` önerilir, ancak `anon` anahtarı ile de çalışacak şekilde RLS politikaları ayarlanmıştır).
+
+4. **Veri Yükleme (Seed):**
+   - Uygulama ilk başlatıldığında, eğer veritabanı boşsa `assignments.csv` dosyasındaki verileri otomatik olarak Supabase'e yükleyecektir.
 
 ## Dağıtım (Vercel)
 
-Vercel üzerinde dağıtım yaparken:
-1. `better-sqlite3` Vercel Serverless Functions ortamında çalışmayabilir. Vercel Postgres veya Turso gibi bir veritabanı servisine geçiş yapılması önerilir.
-2. `src/db.ts` dosyasını kullanılan veritabanı servisine göre güncelleyin.
+1. Projeyi GitHub'a yükleyin.
+2. Vercel'de yeni proje oluşturun ve GitHub deposunu bağlayın.
+3. Vercel proje ayarlarında **Environment Variables** kısmına `SUPABASE_URL` ve `SUPABASE_KEY` ekleyin.
+4. Dağıtımı başlatın.
